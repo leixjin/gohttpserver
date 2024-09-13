@@ -50,6 +50,7 @@ type Directory struct {
 type HTTPStaticServer struct {
 	Root             string
 	Prefix           string
+	CustomPrefix     string
 	Upload           bool
 	Delete           bool
 	Title            string
@@ -121,7 +122,13 @@ func (s *HTTPStaticServer) getRealPath(r *http.Request) string {
 		path = "/" + path
 	}
 	path = filepath.Clean(path) // prevent .. for safe issues
-	relativePath, err := filepath.Rel(s.Prefix, path)
+	var relativePath string
+	var err error
+	if strings.HasPrefix(path, s.CustomPrefix) {
+		relativePath, err = filepath.Rel(s.CustomPrefix, path)
+	} else {
+		relativePath, err = filepath.Rel(s.Prefix, path)
+	}
 	if err != nil {
 		relativePath = path
 	}

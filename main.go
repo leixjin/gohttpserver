@@ -183,6 +183,7 @@ func main() {
 
 	ss := NewHTTPStaticServer(gcfg.Root, gcfg.NoIndex)
 	ss.Prefix = gcfg.Prefix
+	ss.CustomPrefix = "/api/"
 	ss.Theme = gcfg.Theme
 	ss.Title = gcfg.Title
 	ss.GoogleTrackerID = gcfg.GoogleTrackerID
@@ -250,6 +251,8 @@ func main() {
 		w.Write(data)
 	})
 	router.PathPrefix("/").Handler(hdlr)
+	// 自定义 prefix
+	router.PathPrefix(ss.CustomPrefix).Handler(hdlr)
 
 	if gcfg.Addr == "" {
 		gcfg.Addr = fmt.Sprintf(":%d", gcfg.Port)
